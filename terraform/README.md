@@ -35,6 +35,10 @@ There is an Internet Gateway to provide internet access for services within VPC.
 
 The NAT Gateway exist in public subnets. It is used in private subnets to allow services to connect to the internet.
 
+## Nodes
+
+We are currently using four t2.small EC2 virtual machines. Two are deployed in public subnets and two are deployed in private subnets.
+
 ## Security groups traffic rules
 
 - EKS (Control Plane) in/out: 0 - 65535
@@ -44,42 +48,12 @@ The NAT Gateway exist in public subnets. It is used in private subnets to allow 
 - Public subnet ingress: 80 / 443
 - Public subnet egress: 0
 
-## Missions
+## Useful Links
 
-#### Mission 1:
-Créer un cluster EKS pour aller faire tourner la CI
+### Terraform doc
 
-#### Mission 2:
-Mettre en place les tests de front (et back)
+- https://www.terraform.io/docs
 
-#### Mission 3:
-Mettre en place les environnements de test avec une architecture complète (avec auto-nettoyage de l'environnement)
-
-#### Mission 4:
-Mettre en place la gestion des secrets ?
-
-#### Mission 5:
-Mettre en place la prod + pré prod avec deployment one-click
-
-#### Mission 6:
-Faire test de montee en charge avec k6s
-
-### Useful Links
+### Provision Amazon EKS Cluster using Terraform
 
 - https://medium.com/devops-mojo/terraform-provision-amazon-eks-cluster-using-terraform-deploy-create-aws-eks-kubernetes-cluster-tf-4134ab22c594
-
-- https://aws.plainenglish.io/ci-cd-with-gitlab-kubernetes-eks-and-helm-a3667b0fb8ed
-
-- https://wahlnetwork.com/2020/09/22/gitlab-ci-runners-on-amazon-eks-using-terraform/
-
-- https://marcincuber.medium.com/kubernetes-gitlab-runners-on-amazon-eks-5ba7f0bff30e
-
-- https://github.com/npalm/terraform-aws-gitlab-runner
-
-- https://040code.github.io/2017/12/09/runners-on-the-spot
-
-- https://about.gitlab.com/blog/2017/11/23/autoscale-ci-runners/
-
-- https://adambcomer.com/blog/install-gitlab-runner-kubernetes/
-
-- https://github.com/DeimosCloud/terraform-kubernetes-gitlab-runner

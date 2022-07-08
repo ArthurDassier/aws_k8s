@@ -8,7 +8,7 @@ data:
   config.toml: |-
     concurrent = 3
     [[runners]]
-      name = "Kubernetes Demo Runner"
+      name = "Maia Gitlab Runner"
       url = "https://gitlab.com/"
       token = "_mFFewhjLYaqYeZGrFYy"
       executor = "kubernetes"
@@ -16,7 +16,7 @@ data:
         namespace = "gitlab-runner"
         privileged = false
         poll_timeout = 600
-        dns_policy = "default"
+        dns_policy = "cluster-first"
         [[runners.kubernetes.volumes.host_path]]
             name = "docker"
             mount_path = "/var/run/docker.sock"

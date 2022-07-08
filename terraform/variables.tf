@@ -26,6 +26,18 @@ variable "project" {
   type = string
 }
 
+variable "private" {
+  description = "Name to be used on private VMs"
+  # description = "Name of the project deployment."
+  type = string
+}
+
+variable "public" {
+  description = "Name to be used on public VMs"
+  # description = "Name of the project deployment."
+  type = string
+}
+
 variable "vpc_cidr" {
   description = "The CIDR block for the VPC. Default value is a valid CIDR, but not acceptable by AWS and should be overridden"
   type        = string

@@ -1,38 +1,22 @@
-# How to Install GitLab Runner on Kubernetes
+# Kubernetes environment
 
-## TL;DR
-```bash
-$ kubectl create namespace gitlab-runner
-$ kubectl apply -f *.yaml
-```
-Done
+## Ingress
 
-## Stack
+### Traefik
 
-The project consist of 1 deployment with 2 replicas and a volume mounted on:
+Traefik is an open-source reverse proxy. It allows us to expose our services to the internet easily.
 
-    /etc/gitlab-runner/config.toml
+- https://doc.traefik.io/traefik/
 
-### Service
-    port: 80
-    targetPort: 80
-    nodePort: 30008
+### Helm
 
-### ConfigMap
-There can be a maximum of 3 concurrent job at the same time. If you edit the ConfigMap you need to delete the deployment and restart it using this command:
+Helm is a package manager for Kubernetes, it allows us to deploy Traefik without worrying about the configuration. We can specify some details with the values.yaml file inside the ingress folder.
 
-``` bash
-kubectl rollout restart -f gitlab-runner-deployment.yaml
-```
+- https://helm.sh/docs/
 
-### Service Account
-    name: gitlab-admin
-    namespace: gitlab-runner
-    rules:
-        apiGroups: [""]
-        resources: ["*"]
-        verbs: ["*"]
+## GitLab Runner
 
-## Useful link
+GitLab Runner can use Kubernetes to run builds on a Kubernetes cluster. This is possible with the use of the Kubernetes executor.
 
-https://adambcomer.com/blog/install-gitlab-runner-kubernetes/
+- https://docs.gitlab.com/runner/executors/kubernetes.html
+
