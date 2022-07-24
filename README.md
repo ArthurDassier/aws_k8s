@@ -6,8 +6,10 @@ V1 du cluster K8S
 ## Stack 
 
 ### Infra
+  - [AWS](https://aws.amazon.com/)
   - [Docker](https://www.docker.com/)
   - [Kubernetes](https://kubernetes.io/)
+  - [EKS](https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html)
   - [Terraform](https://nodejs.org/en/)
 ### Apps
   - [GitLab](https://gitlab.com/)

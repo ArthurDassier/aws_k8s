@@ -22,11 +22,10 @@ spec:
           image: gitlab/gitlab-runner:latest
           imagePullPolicy: Always
           name: gitlab-runner
-          # resources:
-          #   requests:
-          #     cpu: "100m"
-          #   limits:
-          #     cpu: "100m"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: 100Mi
           volumeMounts:
             - name: config
               mountPath: /etc/gitlab-runner/config.toml

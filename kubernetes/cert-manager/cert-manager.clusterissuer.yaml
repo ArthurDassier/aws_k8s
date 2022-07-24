@@ -14,11 +14,14 @@ spec:
     # This secret is managed by ClusterIssuer resource, you don't have to create it yourself
     privateKeySecretRef:
       name: cert-manager-acme-private-key
-    # ACME server to use
+
+    ############################ ACME server to use ############################
     # Specify https://acme-v02.api.letsencrypt.org/directory for production
     # Specify https://acme-staging-v02.api.letsencrypt.org/directory for testing
     # Staging server issues staging certificate which won't be trusted by most external parties but can be used for development purposes
+
     server: https://acme-v02.api.letsencrypt.org/directory
+
     # Solvers define how to validate you're the owner of the domain for which to issue certificate
     # We use DNS-01 challenge with Route53 by providing related AWS credentials (access key and secret key) for an IAM user with proper rights to manage Route53 records 
     solvers:

@@ -6,7 +6,7 @@ metadata:
   namespace: gitlab-runner
 data:
   config.toml: |-
-    concurrent = 3
+    concurrent = 2
     [[runners]]
       name = "Maia Gitlab Runner"
       url = "https://gitlab.com/"

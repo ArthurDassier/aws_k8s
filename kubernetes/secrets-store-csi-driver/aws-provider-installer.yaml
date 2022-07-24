@@ -66,9 +66,6 @@ spec:
             requests:
               cpu: 50m
               memory: 100Mi
-            limits:
-              cpu: 50m
-              memory: 100Mi
           volumeMounts:
             - mountPath: "/etc/kubernetes/secrets-store-csi-providers"
               name: providervol
