@@ -21,20 +21,22 @@ variable "availability_zones_count" {
 }
 
 variable "project" {
-  description = "Name to be used on all the resources as identifier. e.g. Project name, Application name"
-  # description = "Name of the project deployment."
+  description = "Name to be used as the eks cluster name and all the resources as identifier"
   type = string
 }
 
 variable "private" {
   description = "Name to be used on private VMs"
-  # description = "Name of the project deployment."
   type = string
 }
 
 variable "public" {
   description = "Name to be used on public VMs"
-  # description = "Name of the project deployment."
+  type = string
+}
+
+variable "Route53HostedZoneID" {
+  description = "Route 53 Hosted Zone ID"
   type = string
 }
 
@@ -54,8 +56,8 @@ variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
   default = {
-    "Project"     = "TerraformEKSLab"
-    "Environment" = "Test EKS"
+    "Project"     = "maia-eks-cluster"
+    "Environment" = "dev"
     "Owner"       = "Arthur"
   }
 }

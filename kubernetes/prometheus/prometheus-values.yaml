@@ -875,7 +875,7 @@ grafana:
     #   replacement: $1
     #   action: replace
 
-## Component scraping the kube api server
+## Component scraping the kube api server ################################################################################################
 ##
 kubeApiServer:
   enabled: true

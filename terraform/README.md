@@ -1,32 +1,41 @@
 # Provision Amazon EKS Cluster using Terraform
 
+To set up your kubectl to use your AWS credentials and connect to the EKS control plane, use the following command:
+
+```
+aws eks update-kubeconfig --region eu-west-3 --name <cluster-name>
+```
+
+## Create the EKS cluster
+
 Initialize terraform configuration
-```bash
+
+```
 terraform init
 ```
 
 Validate terraform configuration
-```bash
+
+```
 terraform validate
 ```
 
 Create terraform plan
-```bash
+
+```
 terraform plan -out state.tfplan
 ```
 
 Apply terraform plan
-```bash
+
+```
 terraform apply state.tfplan
 ```
 
 Cleanup
-```bash
-terraform destroy -auto-approve
-```
 
-```bash
-$ aws sts get-session-token --serial-number <serial number> --token-code <token-code>
+```
+terraform destroy -auto-approve
 ```
 
 ## Network

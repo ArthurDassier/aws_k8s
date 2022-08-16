@@ -23,12 +23,12 @@ spec:
     server: https://acme-v02.api.letsencrypt.org/directory
 
     # Solvers define how to validate you're the owner of the domain for which to issue certificate
-    # We use DNS-01 challenge with Route53 by providing related AWS credentials (access key and secret key) for an IAM user with proper rights to manage Route53 records 
+    # We use DNS-01 challenge with Route53 by providing related AWS credentials (access key and secret key) for an IAM user with proper rights to manage Route53 records
     solvers:
     - dns01:
         route53:
           # AWS Access Key ID for our Secret Key
-          accessKeyID: AKIATS4JRFTCJBLCMMPR
+          accessKeyID: AKIAQQC6IZGT6YMB5QMH
           # AWS region to use 
           region: eu-west-3
           # Reference our secret with Secret Key

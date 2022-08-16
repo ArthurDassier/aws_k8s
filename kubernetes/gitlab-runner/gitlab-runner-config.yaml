@@ -8,9 +8,9 @@ data:
   config.toml: |-
     concurrent = 2
     [[runners]]
-      name = "Maia Gitlab Runner"
+      name = "UAT-factory-runner"
       url = "https://gitlab.com/"
-      token = "_mFFewhjLYaqYeZGrFYy"
+      token = "U6TS86obt4We1yg-x5Fy"
       executor = "kubernetes"
       [runners.kubernetes]
         namespace = "gitlab-runner"

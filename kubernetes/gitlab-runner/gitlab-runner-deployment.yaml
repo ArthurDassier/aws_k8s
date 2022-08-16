@@ -36,5 +36,5 @@ spec:
           configMap:
             name: gitlab-runner-config
       nodeSelector:
-        eks.amazonaws.com/nodegroup: privateVMs
+        eks.amazonaws.com/nodegroup: privateFactory
       restartPolicy: Always

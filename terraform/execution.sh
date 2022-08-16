@@ -11,4 +11,4 @@ terraform plan -out state.tfplan
 terraform apply state.tfplan
 
 # cleanup
-terraform destroy -auto-approve
+# terraform destroy -auto-approve

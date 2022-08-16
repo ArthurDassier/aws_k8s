@@ -1,0 +1,56 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "secretsmanager:*",
+            "Resource": "arn:aws:secretsmanager:*:*:secret:*",
+            "Condition": {
+                "StringEquals": {
+                    "aws:ResourceTag/UAT": ""
+                }
+            }
+        },
+        {
+            "Effect": "Allow",
+            "Action": "secretsmanager:ListSecrets",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "ec2:*",
+            "Resource": "*",
+            "Condition": {
+              "StringEquals": {
+                "ec2:ResourceTag/UAT": ""
+              }
+            }
+          },
+          {
+            "Effect": "Allow",
+            "Action": "ec2:Describe*",
+            "Resource": "*"
+          },
+          {
+            "Effect": "Deny",
+            "Action": [
+              "ec2:CreateTags",
+              "ec2:DeleteTags"
+            ],
+            "Resource": "*"
+          },
+        {
+            "Action": "s3:*",
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:s3:::maia-staging",
+                "arn:aws:s3:::maia-staging/*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": "s3:ListAllMyBuckets",
+            "Resource": "arn:aws:s3:::*"
+        }
+    ]
+}

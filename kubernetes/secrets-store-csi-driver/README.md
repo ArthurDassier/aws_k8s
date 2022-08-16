@@ -1,5 +1,9 @@
 # Secret Manager
 
+## Secrets for backend and mongodb
+
+Terraform created all the roles and policies you need for these secrets. The only thing you need to do is to fill them with the data you need as they were created empty.
+
 ## CSI
 
 The Secrets Store CSI Driver secrets-store.csi.k8s.io allows Kubernetes to mount secrets stored in our AWS secrets store into pods as a volume. Once the Volume is attached, the data in it is mounted into the container’s file system.
@@ -9,8 +13,12 @@ The Secrets Store CSI Driver secrets-store.csi.k8s.io allows Kubernetes to mount
 ```
 helm repo add secrets-store-csi-driver https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
 
+helm repo update
+
 helm upgrade --install -n kube-system csi-secrets-store secrets-store-csi-driver/secrets-store-csi-driver -f secrets-store-csi-driver.values.yaml
 ```
+
+`helm repo update` followed by `helm upgrade` command can also be used individually when you make change to the helm values YAML.
 
 ```plantuml
 storage Kubernetes {
