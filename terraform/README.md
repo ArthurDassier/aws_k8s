@@ -1,12 +1,8 @@
 # Provision Amazon EKS Cluster using Terraform
 
-To set up your kubectl to use your AWS credentials and connect to the EKS control plane, use the following command:
-
-```
-aws eks update-kubeconfig --region eu-west-3 --name <cluster-name>
-```
-
 ## Create the EKS cluster
+
+You need to run those commands inside the `terraform` folder.
 
 Initialize terraform configuration
 
@@ -32,11 +28,27 @@ Apply terraform plan
 terraform apply state.tfplan
 ```
 
-Cleanup
+## Set up AWS CLI
+
+To set up your kubectl to use your AWS credentials and connect to the EKS control plane, use the command below.
+
+`<cluster-name>` being the name set during the `terraform apply` command (for example `"my-eks"`), append with `"-cluster"`, giving us `my-eks-cluster`
 
 ```
-terraform destroy -auto-approve
+aws eks update-kubeconfig --region eu-west-3 --name <cluster-name>
 ```
+
+In case of AWS STS error “the security token included in the request is expired” that means you probably have 2FA on your AWS account, you need to retrive new keys and use them in lieu of you old credentials, usually stored in `~/.aws/credentials`. To retrieve you new keys for the day use the command below.
+
+`<token-code>` refers to your 2FA generated token.
+
+```bash
+$ aws sts get-session-token --serial-number <serial number> --token-code <token-code>
+```
+
+More info: 
+- https://aws.amazon.com/premiumsupport/knowledge-center/sts-iam-token-expired
+- https://bobbyhadz.com/blog/aws-cli-security-token-included-request-invalid
 
 ## Network
 
@@ -56,6 +68,12 @@ We are currently using four t2.small EC2 virtual machines. Two are deployed in p
 - Nodes internal: 0 - 65535
 - Public subnet ingress: 80 / 443
 - Public subnet egress: 0
+
+## Destroy the environment *DANGEROUS!* 
+
+```
+terraform destroy -auto-approve
+```
 
 ## Useful Links
 

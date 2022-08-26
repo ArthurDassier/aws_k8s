@@ -8,7 +8,11 @@ kubectl apply -R -f .
 
 ## Register the Runner on GitLab
 
-The first step to deploying a Gitlab Runner on Kubernetes is to obtain a registration token from Gitlab. This token is necessary because it create a new authentication token that connects the Runner to Gitlab.
+The first step to deploying a Gitlab Runner on Kubernetes is to obtain a registration token from Gitlab. This token is necessary because it create a new authentication token that connects the Runner to Gitlab. The token can be obtained on GitLab in the project home that you want to add the runner to then Settings / CICD / Runners.
+
+Keep in mind that there is different types of runners, you can only register group and specific runners. More infos here:
+
+- https://docs.gitlab.com/ee/ci/runners/runners_scope.html
 
 The easiest way to register a Runner is to start a Docker container locally with the Runner:
 
@@ -50,22 +54,22 @@ busybox:latest
 Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
 ```
 
-To check if the registration was successful, return to your browser, and refresh the page. Under the registration information will be the new Runner. This Runner should be disconnected with an error.
+To check if the registration was successful, return to your browser, and refresh the page Settings / CICD / Runners. Under the registration information will be the new Runner. This Runner should be disconnected with an error.
 
-he final step is to extract the authentication token from the local Runner. When we registered the Runner, Gitlab saved an authentication token in the docker container. Before launching the runner to Kubernetes, we need to get this authentication token.
+The final step is to extract the authentication token from the local Runner. When we registered the Runner, Gitlab saved an authentication token in the docker container. Before launching the runner to Kubernetes, we need to get this authentication token.
 
 This token is necessary because it connects your Runner to Gitlab and designates a stable ID for your Runner. When Pods are restarted automatically by Kubernetes, a stable ID allows Gitlab to reference the same logical Runner after each restart.
 
-To find the authentication token, we need to open the generated configuration file from the registration process. In the terminal, run this command to view the configuration.
+To find the authentication token, we need to open the generated configuration file inside the container from the registration process. In the container terminal, run this command to view the configuration.
 
 ```
-$ vim /etc/gitlab-runner/config.toml
+$ cat /etc/gitlab-runner/config.toml
 
 concurrent = 1
 check_interval = 0
 
 [[runners]]
-  name = "temp runner"
+  name = "[RUNNER NAME]"
   url = "https://gitlab.com/"
   token = [TOKEN]
   executor = "docker"
@@ -79,20 +83,27 @@ check_interval = 0
   [runners.cache]
 ```
 
-Above is the configuration that Gitlab created when we registered the runner. I redacted my token for security purposes and renamed it to [TOKEN]. Copy this token and make sure not to lose it, as it is the only way to authenticate the newly registered Runner to Gitlab. Once properly stored, it is safe to shutdown and remove the Docker instance.
+Above is the configuration that Gitlab created when we registered the runner. You must retrive the [RUNNER NAME] and the [TOKEN]. Copy this token and make sure not to lose it, as it is the only way to authenticate the newly registered Runner to Gitlab. Once properly stored, it is safe to shutdown and remove the Docker instance.
 
-Replace the token inside `gitlab-runner-confi.yaml` then, run these commands:
+Replace the runner name and the token inside `gitlab-runner-config.yaml` then, run these commands:
+
 ```
 kubectl create namespace gitlab-runner
 kubectl apply -R -f .
 ```
-The Runner should be deployed to Kubernetes and it should accept jobs now.
+
+The Runner should be deployed to Kubernetes!
+
+Once the runner is register you should edit it in GitLab and uncheck:
+`Indicates whether this runner can pick jobs without tags`, otherwise untagged jobs are stuck in pending mode.
 
 Check if it's working properly:
 
 ```
 kubectl get pods --namespace gitlab-runner
 ```
+
+It should accept jobs now. Happy development!
 
 ## Stack
 
@@ -129,9 +140,10 @@ deployments -[#black]-> storageClass : use
 The stack is deployed in the gitlab-runner namespace, inside our private subnet as to forbid ingress access. We use a secret for our deployment to provide GitLab credentials.
 
 ### ConfigMap
+
 There can be a maximum of 2 concurrent job at the same time. If you edit the ConfigMap you need to delete the deployment and restart it using this command:
 
-``` bash
+```
 kubectl rollout restart -f gitlab-runner-deployment.yaml
 ```
 
@@ -140,12 +152,15 @@ kubectl rollout restart -f gitlab-runner-deployment.yaml
 Having our custom storage class serve only one purpose: to be able to delete Persistent Volumes automatically at PVClaims deletion.
 
 ### Service Account
-    name: gitlab-admin
-    namespace: gitlab-runner
-    rules:
-        apiGroups: [""]
-        resources: ["*"]
-        verbs: ["*"]
+
+```
+name: gitlab-admin
+namespace: gitlab-runner
+rules:
+    apiGroups: [""]
+    resources: ["*"]
+    verbs: ["*"]
+```
 
 ## Useful link
 

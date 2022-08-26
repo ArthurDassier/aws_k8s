@@ -1,6 +1,6 @@
 # EKS Cluster
 
-V1 du cluster K8S
+V2 du cluster K8S
 
 ## Stack 
 
@@ -10,6 +10,8 @@ V1 du cluster K8S
   - [Kubernetes](https://kubernetes.io/)
   - [EKS](https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html)
   - [Terraform](https://nodejs.org/en/)
+  - [Helm](https://helm.sh/)
+  
 ### Apps
   - [GitLab](https://gitlab.com/)
   - [Kaniko](https://cloud.google.com/blog/products/containers-kubernetes/introducing-kaniko-build-container-images-in-kubernetes-and-google-container-builder-even-without-root-access)
@@ -17,12 +19,11 @@ V1 du cluster K8S
 
 ## Required programs
 - Install [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
-- Install [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/)
+- Install [Kubectl](https://kubernetes.io/docs/tasks/tools/)
 - Install [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+- Install [Helm](https://helm.sh/docs/intro/install/)
 - Install [Git](https://git-scm.com/downloads)
 - Install an IDE (we recommand [Visual Studio Code](https://code.visualstudio.com/Download))
-
-HELM
 
 ## Configure your environment
 
@@ -31,28 +32,84 @@ You must set your [AWS Credentials properly](https://docs.aws.amazon.com/cli/lat
 
 Create a user with a key at the parent level with admin policies to get a key and store it in `~/.aws/credentials`
 
-eu-west-3
+Your default region is eu-west-3 and the output format can be json for example.
 
 ### Deploying an EKS and our MVA (Minimal Viable Architecture)
 
 You must start by deploying the EKS via Terraform, follow the doc inside the [terraform](./terraform#terraform) folder. You can then follow the markdown doc of every app stored in the [kubernetes](./kubernetes#kubernetes) folder in the following order.
 
-1) [gitlab-runner](./kubernetes/gitlab-runner/#gitlab-runner)
-2) [traefik](./kubernetes/traefik/#traefik)
-3) [cert-manager](./kubernetes/cert-manager/#cert-manager)
-4) [secret-store](./kubernetes/secrets-store-csi-driver/#secret-store)
+* [terraform](./terraform#terraform)
+* [kubernetes](./kubernetes#kubernetes)
+  * [gitlab-runner](./kubernetes/gitlab-runner/#gitlab-runner)
+  * [traefik](./kubernetes/traefik/#traefik)
+  * [cert-manager](./kubernetes/cert-manager/#cert-manager)
+  * [secret-store](./kubernetes/secrets-store-csi-driver/#secret-store)
 
-### Kubectl
-To set up your kubectl to use your AWS credentials and connect to the EKS control plane, use the following command:
+## To follow if you are not the creator of the cluster
 
-```bash
-$ aws eks update-kubeconfig --region eu-west-3 --name <cluster-name>
+As mentioned in this [article](https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html):
+
+    When you create an Amazon EKS cluster, the IAM entity user or role (for example, for federated users) that creates the cluster is automatically granted system:master permissions in the cluster's RBAC configuration. To grant additional AWS users or roles the ability to interact with your cluster, you must edit the aws-auth ConfigMap within Kubernetes.
+
+  1. Check if you have aws-auth ConfigMap applied to your cluster:
+
+    kubectl describe configmap -n kube-system aws-auth
+
+  2. If ConfigMap is present, skip this step and proceed to step 
+  
+  3. If ConfigMap is not applied yet, you should do the following:
+
+Download the stock ConfigMap:
+
 ```
-In case of AWS STS error “the security token included in the request is expired” that means you probably have 2FA on your AWS account, you need to retrive new keys and use them in lieu of you old credentials, usually stored in `~/.aws/credentials`. To retrieve you new keys for the day use:
-
-```bash
-$ aws sts get-session-token --serial-number <serial number> --token-code <token-code>
+curl -O https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/aws-auth-cm.yaml
 ```
-`<token-code>` refers to your 2FA generated token.
 
-More info [here](https://aws.amazon.com/premiumsupport/knowledge-center/sts-iam-token-expired/) and [here](https://bobbyhadz.com/blog/aws-cli-security-token-included-request-invalid)
+Adjust it using your NodeInstanceRole ARN in the `rolearn`: . To get NodeInstanceRole value check out [this manual](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html) and you will find it at steps 3.8 - 3.10.
+
+```
+data:
+  mapRoles: |
+    - rolearn: <ARN of instance role (not instance profile)>
+```
+
+Apply this config map to the cluster:
+
+    kubectl apply -f aws-auth-cm.yaml
+
+Wait for cluster nodes becoming Ready:
+
+    kubectl get nodes --watch
+
+Edit aws-auth ConfigMap and add users to it according to the example below:
+```
+kubectl edit -n kube-system configmap/aws-auth
+```
+```
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: v1
+data:
+  mapRoles: |
+    - rolearn: arn:aws:iam::555555555555:role/devel-worker-nodes-NodeInstanceRole-74RF4UBDUKL6
+      username: system:node:{{EC2PrivateDNSName}}
+      groups:
+        - system:bootstrappers
+        - system:nodes
+  mapUsers: |
+    - userarn: arn:aws:iam::555555555555:user/admin
+      username: admin
+      groups:
+        - system:masters
+    - userarn: arn:aws:iam::111122223333:user/ops-user
+      username: ops-user
+      groups:
+        - system:masters
+```
+
+Save and exit the editor.
+
+  4. Create kubeconfig for your IAM user following [this manual](https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html).
+

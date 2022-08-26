@@ -51,6 +51,14 @@ kubectl apply -f cert-manager.clusterissuer.yaml
 kubectl apply -f cert-manager.aws-secret.yaml
 ```
 
+## Troubleshoot
+
+```
+kubectl get certificate -n <namespace>
+kubectl get order -n <namespace>
+kubectl get challenge -n <namespace>
+```
+
 ## Let’s Encrypt rate limits
 
 Let’s Encrypt have rate limits, for testing purpose you should use let's encrypt staging server (ACME server to use in ClusterIssuer yaml). These certificates won't be trusted by most external parties.

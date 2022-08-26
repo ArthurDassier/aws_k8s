@@ -8,15 +8,16 @@ data:
   config.toml: |-
     concurrent = 2
     [[runners]]
-      name = "UAT-factory-runner"
+      name = "UAT-Albator-galaxy-runner"
       url = "https://gitlab.com/"
-      token = "U6TS86obt4We1yg-x5Fy"
+      token = "-oETV2e-je8oya6WNiH1"
       executor = "kubernetes"
       [runners.kubernetes]
         namespace = "gitlab-runner"
         privileged = false
         poll_timeout = 600
         dns_policy = "cluster-first"
+        cpu_request = "1"
         [[runners.kubernetes.volumes.host_path]]
             name = "docker"
             mount_path = "/var/run/docker.sock"

@@ -28,11 +28,13 @@ variable "project" {
 variable "private" {
   description = "Name to be used on private VMs"
   type = string
+  default = "privateVMs"
 }
 
 variable "public" {
   description = "Name to be used on public VMs"
   type = string
+  default = "publicVMs"
 }
 
 variable "Route53HostedZoneID" {
