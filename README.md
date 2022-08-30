@@ -11,11 +11,10 @@ V2 du cluster K8S
   - [EKS](https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html)
   - [Terraform](https://nodejs.org/en/)
   - [Helm](https://helm.sh/)
-  
+
 ### Apps
   - [GitLab](https://gitlab.com/)
   - [Kaniko](https://cloud.google.com/blog/products/containers-kubernetes/introducing-kaniko-build-container-images-in-kubernetes-and-google-container-builder-even-without-root-access)
-
 
 ## Required programs
 - Install [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
